@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const db_config_1 = __importDefault(require("../configs/db.config"));
 /** Models */
 require("../models/user.model");
+require("../models/task.model");
 db_config_1.default
     .sync()
     .then(() => {

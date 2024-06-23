@@ -3,6 +3,7 @@ import sequelize from "../configs/db.config";
 
 /** Models */
 import "../models/user.model";
+import "../models/task.model";
 
 sequelize
     .sync()
