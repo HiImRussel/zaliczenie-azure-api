@@ -15,7 +15,19 @@ import updateTaskSchema from "../validations/updateTask.validation";
 import { parseJoiError } from "../services/parseError.service";
 
 export const getAllTasks = async (req: Request, res: Response) => {
-    const tasks = await Task.findAll();
+    const { userId } = req;
+
+    if (!userId) {
+        return res.status(401).json({
+            status: STATUS.ERROR,
+            message: "User not found!",
+        });
+    }
+
+    const tasks = await Task.findAll({
+        where: { ownerID: userId },
+        attributes: { exclude: ["ownerID"] },
+    });
 
     res.status(200).json({
         status: STATUS.OK,
@@ -38,7 +50,7 @@ export const addTask = async (req: Request, res: Response) => {
 
     if (error) return parseJoiError(error, res);
 
-    const task = await Task.create({
+    await Task.create({
         ownerID: userId,
         title,
         description,
@@ -47,7 +59,6 @@ export const addTask = async (req: Request, res: Response) => {
 
     res.status(200).json({
         status: STATUS.OK,
-        task,
     });
 };
 
@@ -96,5 +107,25 @@ export const updateTask = async (req: Request, res: Response) => {
     res.status(200).json({
         status: STATUS.OK,
         task,
+    });
+};
+
+export const deleteTask = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { userId } = req;
+
+    const task = await Task.findOne({ where: { id, ownerID: userId } });
+
+    if (!task) {
+        return res.status(401).json({
+            status: STATUS.ERROR,
+            message: "Task not found!",
+        });
+    }
+
+    await task.destroy();
+
+    res.status(200).json({
+        status: STATUS.OK,
     });
 };

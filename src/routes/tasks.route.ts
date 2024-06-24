@@ -7,6 +7,7 @@ import verifyJWT from "../middlewares/verifyJWT.middleware";
 /** Controllers */
 import {
     addTask,
+    deleteTask,
     getAllTasks,
     updateTask,
 } from "../controllers/tasks.controller";
@@ -22,5 +23,8 @@ router.post("/add", verifyJWT, addTask);
 
 /** Patch */
 router.patch("/update", verifyJWT, updateTask);
+
+/** Delete */
+router.delete("/delete/:id", verifyJWT, deleteTask);
 
 export default router;
